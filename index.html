@@ -1,0 +1,53 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Ultimate Video Downloader</title>
+  <meta name="description" content="Download any video from any website, including adult sites. Full HD and MP3 supported."/>
+  <meta name="keywords" content="download any video from online, free video downloader, HD video downloader, download YouTube video online, Facebook video downloader, TikTok video downloader, Instagram downloader, porn video downloader, adult video download, save online video, fast video downloader, high quality video downloader, 4k video downloader, mp3 from video, video download tool, online video grabber, Twitter video downloader, download from any site, universal downloader, no watermark video download, full HD video download, 1080p video downloader, download embedded video, stream ripper, video audio extractor, adult content downloader, NSFW downloader, YouTube to mp3 converter, clip downloader, download xvideos, redtube downloader, pornhub video grabber, video downloader API, multi-format downloader, sound extractor from video, universal media downloader, HD audio downloader, download music video, downloader tool, downloader website, online media ripper, private video downloader, TikTok no watermark, download reels, save IGTV, save streaming content, download only audio, convert video to audio, full movie downloader, free film downloader, save Twitter videos, mp4 download tool, get video from any link, universal content downloader, top video downloader site, web-based downloader, Ultimate Video Downloader"/>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="container">
+    <h1>Ultimate Video Downloader</h1>
+    <p class="desc">Download videos or audio from any website — no limits, no signups.</p>
+    <input id="url" type="url" placeholder="Paste video URL here" required />
+    <select id="format">
+      <option value="video">Full HD Video (MP4)</option>
+      <option value="audio">Audio Only (MP3)</option>
+    </select>
+    <button onclick="download()">Download</button>
+    <p id="status"></p>
+  </div>
+  <script>
+    async function download() {
+      const url = document.getElementById("url").value;
+      const format = document.getElementById("format").value;
+      const status = document.getElementById("status");
+      status.innerText = "Processing...";
+      try {
+        const res = await fetch("/download", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ url, format })
+        });
+        if (!res.ok) {
+          const data = await res.json();
+          status.innerText = "Error: " + data.error;
+          return;
+        }
+        const blob = await res.blob();
+        const a = document.createElement("a");
+        a.href = window.URL.createObjectURL(blob);
+        a.download = format === "video" ? "video.mp4" : "audio.mp3";
+        a.click();
+        status.innerText = "Download started!";
+      } catch (err) {
+        status.innerText = "Unexpected error occurred.";
+      }
+    }
+  </script>
+</body>
+</html>
